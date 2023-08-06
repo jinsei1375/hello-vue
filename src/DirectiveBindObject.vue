@@ -52,7 +52,50 @@ const computedStyles = computed(
       bgColorBlue: bgColorFlg
     }
   } 
-)
+  )
+
+
+  // イベントのディレクティブ
+  const randValue = ref("まだです");
+  const onButtonClick = (): void => {
+    const rand = Math.round(Math.random() * 10);
+    randValue.value = String(rand);
+  }
+
+  const mousePointerX = ref(0);
+  const mousePointerY = ref(0);
+  const onImgMousemove = (event: MouseEvent): void => {
+    mousePointerX.value = event.offsetX;
+    mousePointerY.value = event.offsetY;
+  }
+
+  const pBgColor = ref("white");
+  const onPClick = (bgColor: string): void => {
+    pBgColor.value = bgColor
+  }
+
+  const pMsg = ref("イベント前（ここをクリック！）");
+  const pBgColorEvent = ref("white");
+  const onClickWithEvent = (bgColor: string, event: MouseEvent): void => {
+    pBgColorEvent.value = bgColor;
+    pMsg.value = event.timeStamp.toString();
+  }
+
+  const errorMsg = ref("未送信");
+  const onFormSubmit = (): void => {
+    errorMsg.value = "送信されました。";
+  }
+
+  const clickMsg = ref("まだです！");
+  const onEnterKey = (): void => {
+    clickMsg.value = "エンターキーが押下されました。";
+  }
+  const onRightButtonKey = (): void => {
+    clickMsg.value = "ボタンが右クリックされました。";
+  }
+  const onShiftClick = (): void => {
+    clickMsg.value = "シフトを押しながらクリックされました。";
+  }
 
 </script>
 
@@ -73,7 +116,31 @@ const computedStyles = computed(
   <p v-bind:class="{'text-color-pink': true}">{{ msg2 }}</p><br>
   <p class="textSize24" v-bind:class="{textColorRed: isTextColorRed, bgColorBlue: isBgColorBlue}">{{ msg2 }}</p><br>
   <p class="textSize24" v-bind:class="styles">{{ msg2 }}</p><br>
-  <p v-bind:class="computedStyles">{{ msg2 }}</p><br>
+  <p v-bind:class="computedStyles">{{ msg2 }}</p><br><br>
+
+  <section>
+    <button v-on:click="onButtonClick">クリック</button>
+    <p>クリックの結果：{{ randValue }}</p>
+    <img src="./assets/logo.svg" alt="" width="200" v-on:mousemove="onImgMousemove">
+    <p>
+      ポインタの位置： x={{ mousePointerX }}; y={{ mousePointerY }}
+    </p>
+    <p v-on:click="onPClick('red')" v-bind:style="{backgroundColor: pBgColor, color: 'black', cursor: 'pointer'}">ここをクリックすると背景色が変わります。</p><br>
+    <p v-on:click="onClickWithEvent('green', $event)" v-bind:style="{backgroundColor: pBgColorEvent, color: 'black', cursor: 'pointer'}">{{ pMsg }}</p>
+
+    <form action="#" v-on:submit.prevent="onFormSubmit">
+      <input type="text" required><br>
+      <button type="submit">送信</button>
+      <p>{{ errorMsg }}</p><br>
+      <p>{{ clickMsg }}</p>
+    </form>
+    <input type="text" v-on:keydown.enter="onEnterKey"><br>
+    <input type="text" v-on:keydown.enter.exact="onEnterKey"><br><!-- Enterキーだけに制御 -->
+    <button v-on:click.right="onRightButtonKey">右クリック</button>
+    <button v-on:click.shift="onShiftClick">シフトを押しながらクリック</button>
+  </section>
+
+
 </template>
 
 <style>
