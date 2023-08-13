@@ -1,29 +1,26 @@
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue';
-import { Member } from '../interfaces';
+import { ref, computed } from 'vue';
 
 interface Props {
   id: number;
+  name: string;
+  email: string;
+  points: number;
+  note?: string;
 }
 
 interface Emits {
-  (event: "incrementPoint", id: number): void;
+  (event: "update:points", id: number): void;
 }
 
 const props = defineProps<Props>();
-const memberList = inject("memberList") as Map<number, Member>;
-const member = computed(
-  (): Member => {
-    return memberList.get(props.id) as Member;
-  }
-);
 const emit = defineEmits<Emits>();
 
 // const localPoints = ref(props.points);
 
 const localNote = computed(
   (): string => {
-    let localNote = member.value.note;
+    let localNote = props.note;
     if(localNote == undefined) {
       localNote = "--";
     }
@@ -31,8 +28,10 @@ const localNote = computed(
   }
 )
 
-const pointUp = (): void => {
-  emit("incrementPoint", props.id);
+const onInput = (event: Event): void => {
+  const element = event.target as HTMLInputElement;
+  const inputPoints = Number(element.value);
+  emit("update:points", inputPoints);
 }
 // const pointUp = (): void => {
 //   localPoints.value++;
@@ -42,19 +41,18 @@ const pointUp = (): void => {
 
 <template>
   <section>
-    <h4>{{ member.name }}さんの情報</h4>
+    <h4>{{ name }}さんの情報</h4>
     <dl>
       <dt>ID</dt>
       <dd>{{ id }}</dd>
       <dt>メールアドレス</dt>
-      <dd>{{ member.email }}</dd>
+      <dd>{{ email }}</dd>
       <dt>保有ポイント</dt>
       <dd>
-        <input type="number" v-model.number="member.points">
+        <input type="number" v-bind.value="points" v-on:input="onInput">
       </dd>
       <dt>備考</dt>
       <dd>{{ localNote }}</dd>
     </dl>
-    <button v-on:click="pointUp">ポイント加算</button>
   </section>
 </template>

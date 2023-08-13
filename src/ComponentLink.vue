@@ -4,6 +4,7 @@ import OneSection from './components/OneSection.vue';
 import WithModel from './components/WithModel.vue';
 import OneInfo from './components/OneInfo.vue';
 import OneMember from './components/OneMember.vue';
+import OneMemberModel from './components/OneMemberModel.vue';
 
 const memberListInit = new Map<number, Member>();
 memberListInit.set(33456, {id: 33456, name: "田中太郎", email: "aaa@aaa.com", points: 100, note: "初回特典あり"});
@@ -19,6 +20,14 @@ const totalPoints = computed(
     return total;
   }
 )
+
+// Emitにより実行されるメソッド
+const onIncrementPoint = (id: number): void => {
+  const member = memberList.value.get(id);
+  if(member != undefined) {
+    member.points++;
+  }
+}
 
 const rand = Math.round(Math.random() * 10);
 const propsNumber = ref(rand);
@@ -97,7 +106,20 @@ interface Member {
       v-bind:email="member.email"
       v-bind:points="member.points"
       v-bind:note="member.note"
+      v-on:incrementPoint="onIncrementPoint"
     />
+  </section>
+  <section>
+    <h1>会員リスト</h1>
+    <p>全会員の保有ポイント：{{ totalPoints }}</p>
+    <OneMemberModel
+      v-for="[id, member] in memberList"
+      v-bind:key="id"
+      v-bind:id="id"
+      v-bind:name="member.name"
+      v-bind:email="member.email"
+      v-model:points="member.points"
+      v-bind:note="member.note" />
   </section>
 
 </template>

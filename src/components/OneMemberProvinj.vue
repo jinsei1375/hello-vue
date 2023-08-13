@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue';
+import { computed, inject } from 'vue';
 import { Member } from '../interfaces';
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 interface Emits {
-  (event: "incrementPoint", id: number): void;
+  (event: "update:points", id: number): void;
 }
 
 const props = defineProps<Props>();
@@ -31,13 +31,6 @@ const localNote = computed(
   }
 )
 
-const pointUp = (): void => {
-  emit("incrementPoint", props.id);
-}
-// const pointUp = (): void => {
-//   localPoints.value++;
-// }
-
 </script>
 
 <template>
@@ -55,6 +48,5 @@ const pointUp = (): void => {
       <dt>備考</dt>
       <dd>{{ localNote }}</dd>
     </dl>
-    <button v-on:click="pointUp">ポイント加算</button>
   </section>
 </template>
