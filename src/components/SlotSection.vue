@@ -13,6 +13,9 @@ defineProps<Props>();
     <slot>
       <p>{{ name }}は問題ありません</p>
     </slot>
+    <slot name="detail">
+      <p>特にありません</p>
+    </slot>
   </section>
 </template>
 
